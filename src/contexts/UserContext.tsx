@@ -1,29 +1,32 @@
 "use client";
 
 import { User } from "@/types/types";
-import React, { createContext, useState, useContext } from "react";
+import React, {
+    createContext,
+    useContext,
+    useRef,
+    MutableRefObject,
+} from "react";
 
 type UserContextType = {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    userRef: MutableRefObject<User | null>;
 };
 
 const UserContext = createContext<UserContextType>({
-  user: null,
-  setUser: () => null,
+    userRef: { current: null },
 });
 
 // UserProvider component
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
+    children,
 }) => {
-  const [user, setUser] = useState<User | null>(null); // Initialize user state with null
+    const userRef = useRef<User | null>(null); // Initialize user state with null
 
-  return (
-    <UserContext.Provider value={{ user, setUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+    return (
+        <UserContext.Provider value={{ userRef }}>
+            {children}
+        </UserContext.Provider>
+    );
 };
 
 export const useUser = (): UserContextType => useContext(UserContext);
